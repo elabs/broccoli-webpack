@@ -3,15 +3,14 @@
 var RSVP = require('rsvp');
 var webpack = require('webpack');
 var syncDir = require("./sync_dir");
-var path = require("path");
-var fs = require("fs.extra");
+var quickTemp = require("quick-temp");
 
 function WebpackWriter(inputTree, options) {
 	if (!(this instanceof WebpackWriter)) return new WebpackWriter(inputTree, options);
 	this.inputTree = inputTree;
 	this.options = options;
-  this.inPath = path.join(process.cwd(), "./tmp/webpack-in");
-  this.outPath = path.join(process.cwd(), "./tmp/webpack-out");
+  quickTemp.makeOrRemake(this, "inPath")
+  quickTemp.makeOrRemake(this, "outPath")
 }
 
 WebpackWriter.prototype.read = function(readTree) {
@@ -49,8 +48,8 @@ WebpackWriter.prototype.read = function(readTree) {
 }
 
 WebpackWriter.prototype.cleanup = function() {
-  fs.rmrfSync(this.inPath);
-  fs.rmrfSync(this.outPath);
+  quickTemp.remove(this, "inPath")
+  quickTemp.remove(this, "outPath")
 }
 
 module.exports = WebpackWriter;
