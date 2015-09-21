@@ -1,7 +1,6 @@
 var fs = require("fs.extra");
 var path = require("path");
-var XXHash = require("xxhash");
-var seed = 0xCAFEBABE;
+var crypto = require("crypto");
 var empty = {};
 
 function copySync(src, dest) {
@@ -12,7 +11,9 @@ function copySync(src, dest) {
 function hash(src) {
   var contents = fs.readFileSync(src);
   if(contents.length) {
-    return XXHash.hash(contents, seed);
+    var shasum = crypto.createHash("sha256");
+    shasum.update(contents);
+    return shasum.digest("hex");
   } else {
     return empty;
   }
